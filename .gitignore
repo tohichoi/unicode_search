@@ -1,0 +1,5 @@
+__pycache__/
+django/server/dataserver/migrations/
+django/server/db.sqlite3
+electron/package-lock.json
+
