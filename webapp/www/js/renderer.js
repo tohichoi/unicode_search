@@ -16,6 +16,7 @@ class Renderer {
     constructor() {
         this.msnry = null;
         this.cls = this;
+        this.params = null;
     }
 
     add_item(pa, item, msnry) {
@@ -46,7 +47,7 @@ class Renderer {
     }
     
     
-	load_data() {
+	load_data(url_params) {
         let username = 'admin'
         let password = '1234'
         let token = '60d12cff2778e668d5f9d3d5537869bc43878c0b'
@@ -56,7 +57,8 @@ class Renderer {
             'Authorization': `Token ${token}`
         });
         
-        const fetchPromise = fetch('http://127.0.0.1:8000/unicode/', {headers: headers});
+        const search_params = (url_params) ? (new URLSearchParams(url_params)).toString() : '';
+        const fetchPromise = fetch('http://127.0.0.1:8000/unicode' + search_params, {headers: headers});
         
         fetchPromise
         .then((response) => {
@@ -66,7 +68,7 @@ class Renderer {
             return response.json();
         })
         .then((data) => {
-            const search_info = document.getElementById('id_search_info');
+            const search_info = document.getElementById(this.params.elements.search_info);
             search_info.innerText = `Data count : ${data.count}`;
             for (let item of data.results) {
                 this.add_item(pa, item);
@@ -78,13 +80,18 @@ class Renderer {
     }
     
     
-	init() {
-        let elm = document.getElementById('id_search_result_container');
+    init(params) {
+        this.params = params;
+        let elm = document.getElementById(this.params.elements.result_view);
         this.msnry = new Masonry( elm, {
             // options
             itemSelector: '.grid-item',
             // columnWidth: 100
-          });
+        });
+        document.getElementById(this.params.elements.search).onclick = (event) => {
+            let q = document.getElementById(this.params.elements.search_text).value;
+            this.load_data({'search': q});
+        }
     }
 }
 

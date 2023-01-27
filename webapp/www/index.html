@@ -27,8 +27,8 @@
   <body>
     <h1>Unicode search tool</h1>
     <div class="row mb-3">
-      <div class="col"><input class="form-control" type="text"/></div>
-      <div class="col"><button class="btn btn-default bi-search"></button></div>
+      <div class="col"><input class="form-control" type="text" id="id_search_text"/></div>
+      <div class="col"><button class="btn btn-default bi-search" id="id_search"></button></div>
       <p id="id_search_info"></p>
     </div>
     <!-- masonry -->
@@ -62,8 +62,15 @@
       import("./js/renderer.js").then((module) => {
         // console.log(`${module} is loaded.`);
         let renderer = new module.Renderer()
-        renderer.init();
-        renderer.load_data();
+        renderer.init({
+          'elements' : {
+            'result_view' : 'id_search_result_container',
+            'search' : 'id_search',
+            'search_text' : 'id_search_text',
+            'search_info' : 'id_search_info'
+          }
+        });
+        renderer.load_data(null);
       });
     });
   </script>
