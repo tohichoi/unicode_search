@@ -1,11 +1,12 @@
 from code import interact
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
+from rest_framework import viewsets, pagination
 from rest_framework import status
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework import filters
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from dataserver.models import Unicode
 from dataserver.serializers import UserSerializer, GroupSerializer, UnicodeSerializer
@@ -51,3 +52,4 @@ class UnicodeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = (filters.SearchFilter,)
     search_fields = ['name', 'text']
+

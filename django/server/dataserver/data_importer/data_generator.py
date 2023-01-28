@@ -71,7 +71,7 @@ import pathlib
 #proj_dir = pathlib.Path(os.getcwd()).joinpath('../../').resolve().joinpath('server')
 #sys.path.append(str(proj_dir.absolute()))
 
-proj_dir = '/home/x/Workspace/unicode-search/django/server/'
+proj_dir = '/home/x/Workspace/unicode_search/django/server/'
 sys.path.append(proj_dir)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
 django.setup()
