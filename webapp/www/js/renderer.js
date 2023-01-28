@@ -42,9 +42,9 @@ class Renderer {
                     data-bs-title="Infomration"
                     data-bs-content="Copied to clipboard!">
                     <h1 class="card-title text-center" style="font-weight:900">${item_text_value}</h1>
-                    <div class="card-text">
-                        <h6 class="text-muted text-center">${item.name}</h4>
-                        <h6 class="text-muted text-center">${item.code}</h6>
+                    <div class="card-text text-center">
+                        <small class="text-muted text-center">${item.name}</small>
+                        <small class="text-muted text-center">${item.code}</small>
                     </div>
                 </div>
             </div>
