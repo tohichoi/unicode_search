@@ -23,8 +23,17 @@ class Renderer {
     clear_children(pa) {
         for (let c of pa.children) {
             this.msnry.remove(c);
-            // pa.removeChild(c);
         }
+    }
+
+    show_popup(elm, html) {
+        const prev_html = `${elm.innerHTML}`;
+        elm.setAttribute('data-prev-html', prev_html);
+        elm.innerHTML = html;
+        setTimeout((prev_html) => {
+            elm.innerHTML = elm.getAttribute('data-prev-html');
+            elm.removeAttribute('data-prev-html');
+        }, 3000);
     }
     
     add_item(pa, item, msnry) {
@@ -41,9 +50,9 @@ class Renderer {
                     data-bs-placement="top"
                     data-bs-title="Infomration"
                     data-bs-content="Copied to clipboard!">
-                    <h1 class="card-title text-center" style="font-weight:900">${item_text_value}</h1>
+                    <h1 class="card-title text-center unicode" style="font-weight:900">${item_text_value}</h1>
                     <div class="card-text text-center">
-                        <small class="text-muted text-center">${item.name}</small>
+                        <small class="text-muted text-center">${item.name}</small><br>
                         <small class="text-muted text-center">${item.code}</small>
                     </div>
                 </div>
@@ -54,26 +63,23 @@ class Renderer {
         const child = tmpl.content.firstElementChild;
         child.tooltip = new bootstrap.Popover(child);
         child.onclick = (event) => {
-            navigator.clipboard.writeText(event.target.innerText);
-            //child.tooltip.show();
+            const ch = event.target.innerText;
+            navigator.clipboard.writeText(ch);
             let c = event.target.parentElement.parentElement;
             if (c.hasAttribute('data-grid-item')) {
-                const popover = bootstrap.Popover.getOrCreateInstance(`#${c.attributes.id.value}`);
-                popover.setContent({
-                    '.popover-header': 'another title',
-                    '.popover-body': 'another content'
-                });
-                popover.show();
+                const search_info = document.getElementById(this.params.elements.search_info);
+                this.show_popup(search_info, `<span class="badge bg-secondary">${ch}</span> copied to clipboard`);
             }
         }
-        // const child = tmpl.content.firstChild;
         pa.appendChild(child);
         this.msnry.appended(child);
         this.msnry.layout();
     }
     
     
-	load_data(url_params) {
+    load_data(url_params) {
+        // create with django restframework
+        // https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
         let username = 'admin'
         let password = 'admin'
         let token = '0fac0bc102d6a61365c4d697472d93d7ffecddd1'
@@ -95,7 +101,7 @@ class Renderer {
         })
         .then((data) => {
             const search_info = document.getElementById(this.params.elements.search_info);
-            search_info.innerHTML = `Matched <b>${data.count}</b> codes`;
+            search_info.innerHTML = `Matched <b>${data.count}</b> code(s)`;
             this.clear_children(pa);
             for (let item of data.results) {
                 this.add_item(pa, item);
@@ -116,7 +122,6 @@ class Renderer {
                 prev.querySelector('.page-link').onclick = (event) => { this.load_data(url_params); };
             } else {
                 prev.classList.add('disabled');
-                // prev.querySelector('.page-link').href = '';
             }
 
             // next
@@ -127,19 +132,26 @@ class Renderer {
                 if (sp.has('page'))
                     url_params.page = sp.get('page');
                 next.querySelector('.page-link').onclick = (event) => { this.load_data(url_params); };
-                // next.querySelector('.page-link').href = data.links.next;
             } else {
                 next.classList.add('disabled');
-                // next.querySelector('.page-link').href = '';
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById(this.params.elements.search_text).focus();
         })
         .catch((error) => {
             console.error(`${error}`);
         });
     }
-    
+
+    search() {
+        let q = document.getElementById(this.params.elements.search_text).value;
+        this.url_params = {
+            'search': q.trim(),
+            'page': 1
+        };
+        this.load_data(this.url_params);
+    }
     
     init(params) {
         this.params = params;
@@ -147,26 +159,25 @@ class Renderer {
         this.msnry = new Masonry( elm, {
             // options
             itemSelector: '.grid-item',
-            // columnWidth: 100
+            columnWidth: '.card',
             fitWidth: true,
             containerStyle: { position: 'relative' }
         });
         
         let last_input_time = performance.now();
         let search_text_elm = document.getElementById(this.params.elements.search_text);
-        let search_elm = document.getElementById(this.params.elements.search);
         let prev_text = '';
 
         search_text_elm.onkeyup = (event) => {
             let curr_input_time = performance.now();
-            console.log(`${(curr_input_time - last_input_time) / 1000.}`);
+            // console.log(`${(curr_input_time - last_input_time) / 1000.}`);
             if (event.key === "Enter") {
-                search_elm.click();
+                this.search();
             }
             else if ((curr_input_time - last_input_time) / 1000. > 1) {
                 if (prev_text != event.target.value) {
                     setTimeout((timer_event) => {
-                        search_elm.click();
+                        this.search();
                     }, 1000);
                 }
             } 
@@ -174,15 +185,7 @@ class Renderer {
             prev_text = event.target.value; 
         }
 
-        search_elm.onclick = (event) => {
-            let q = search_text_elm.value;
-            // this.load_data({'search': q.trim().replaceAll(' ', '+')});
-            this.url_params = {
-                'search': q.trim(),
-                'page': 1
-            };
-            this.load_data(this.url_params);
-        }
+        search_text_elm.focus();
     }
 }
 

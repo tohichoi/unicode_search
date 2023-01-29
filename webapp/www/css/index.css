@@ -1,7 +1,11 @@
 .grid-item { 
-    width: 196px; 
+    width: 128px; 
     margin-bottom: 10px;
     margin: 0 auto;
 }
 
 .grid-item--width2 { width: 400px; }
+
+.unicode {
+    font-style: "Noto Sans" !important;
+}
