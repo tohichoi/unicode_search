@@ -2,6 +2,10 @@
 
 For the record
 
+# Show me how it looks!
+
+![Screenshot from 2023-01-29 22-59-58](https://user-images.githubusercontent.com/10368601/215333827-f42b0149-2662-40be-ba35-a5b24b01d1a1.png)
+
 # What is it?
 
 Searching unicode by its name using web browser without internet connection.
