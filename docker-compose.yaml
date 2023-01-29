@@ -1,0 +1,9 @@
+services:
+  app:
+    image: unicode-search
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+      - "8000:8000"
