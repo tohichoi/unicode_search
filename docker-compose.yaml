@@ -1,6 +1,6 @@
 services:
   app:
-    image: unicode-search
+    image: unicode-search:1.0
     build:
       context: .
       dockerfile: Dockerfile

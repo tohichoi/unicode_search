@@ -7,5 +7,10 @@
 .grid-item--width2 { width: 400px; }
 
 .unicode {
-    font-style: "Noto Sans" !important;
+    font-family: "Noto Sans" !important;
+    cursor:copy;
+}
+
+.unicode:hover {
+    background-color: #eeeeee;
 }

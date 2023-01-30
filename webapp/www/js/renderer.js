@@ -84,13 +84,14 @@ class Renderer {
         let password = 'admin'
         let token = '0fac0bc102d6a61365c4d697472d93d7ffecddd1'
         let pa = document.getElementById("id_search_result_container");
+        let api_address = window.localStorage.getItem(this.params.storage.api_address);
         
         const headers = new Headers({
             'Authorization': `Token ${token}`
         });
         
         const search_params = (url_params) ? (new URLSearchParams(url_params)).toString() : '';
-        const fetchPromise = fetch('http://127.0.0.1:8000/unicode/?' + search_params, {headers: headers});
+        const fetchPromise = fetch(`${api_address}/unicode/?` + search_params, {headers: headers});
         
         fetchPromise
         .then((response) => {
@@ -140,7 +141,9 @@ class Renderer {
             document.getElementById(this.params.elements.search_text).focus();
         })
         .catch((error) => {
-            console.error(`${error}`);
+            let msg = `${error}` + `${window.localStorage.getItem(this.params.storage.api_address)}`;  
+            window.alert(msg);
+            console.error(msg);
         });
     }
 
