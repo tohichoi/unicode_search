@@ -21,7 +21,7 @@ Searching unicode by its name using web browser without internet connection.
     - RESTful API 
       - partially retrieve query results
       - authenticate with tokens (no user interaction)
-  - User perference adaptation
+  - User preference adaptation
     - retrieve query results having user peference
 
 # How to use it?
