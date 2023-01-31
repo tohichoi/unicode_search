@@ -26,6 +26,12 @@ class Renderer {
         }
     }
 
+    copy_to_clipboard(ch) {
+        navigator.clipboard.writeText(ch);
+        const search_info = document.getElementById(this.params.elements.search_info);
+        this.show_popup(search_info, `<span class="badge bg-secondary">${ch}</span> copied to clipboard`);
+    }
+
     show_popup(elm, html) {
         const prev_html = `${elm.innerHTML}`;
         elm.setAttribute('data-prev-html', prev_html);
@@ -34,6 +40,34 @@ class Renderer {
             elm.innerHTML = elm.getAttribute('data-prev-html');
             elm.removeAttribute('data-prev-html');
         }, 3000);
+    }
+
+    add_search_history(ch, do_copy=true) {
+        let pa = document.getElementById(this.params.elements.search_history);
+        let chs = Array.from(pa.children).map(e => e.innerText); 
+        if (chs.find(x => x === ch)) {
+            // duplicated ch. just copy to clipboard
+            if (do_copy)
+                this.copy_to_clipboard(ch);
+            return;
+        }
+
+        let template = `<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">${ch}</button>`;
+        const tmpl = document.createElement('template');
+        tmpl.innerHTML = template;
+        const child = tmpl.content.firstElementChild;
+        if (pa.children.length > this.params.config.max_history) {
+            while (pa.children.length >= this.params.config.max_history)
+                pa.lastChild.remove();
+        }
+        pa.prepend(child);
+        child.onclick = (event) => {
+            this.copy_to_clipboard(event.target.innerText);
+        }
+
+        // store
+        chs.push(ch);
+        window.localStorage.setItem(this.params.storage.search_history, JSON.stringify(chs));
     }
     
     add_item(pa, item, msnry) {
@@ -63,12 +97,11 @@ class Renderer {
         const child = tmpl.content.firstElementChild;
         child.tooltip = new bootstrap.Popover(child);
         child.onclick = (event) => {
-            const ch = event.target.innerText;
-            navigator.clipboard.writeText(ch);
             let c = event.target.parentElement.parentElement;
             if (c.hasAttribute('data-grid-item')) {
-                const search_info = document.getElementById(this.params.elements.search_info);
-                this.show_popup(search_info, `<span class="badge bg-secondary">${ch}</span> copied to clipboard`);
+                const ch = event.target.innerText;
+                this.copy_to_clipboard(ch);
+                this.add_search_history(ch)
             }
         }
         pa.appendChild(child);
@@ -186,6 +219,11 @@ class Renderer {
             } 
             last_input_time = curr_input_time;
             prev_text = event.target.value; 
+        }
+
+        let history = window.localStorage.getItem(this.params.storage.search_history);
+        if (history) {
+            JSON.parse(history).map(x => this.add_search_history(x, false));
         }
 
         search_text_elm.focus();

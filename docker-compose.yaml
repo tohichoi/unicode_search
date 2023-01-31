@@ -4,6 +4,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command:
+      # working dir in image : /app
+      - ./run.sh
     ports:
       - "8002:8002"
       - "8000:8000"

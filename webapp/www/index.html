@@ -36,6 +36,16 @@
       </div>
     </div>
     
+    <div class="row justify-content-center">
+      <div class="col-auto">
+        history:
+      </div>
+      <div class="col-auto">
+        <div class="btn-group" role="group" id="id_search_history">
+        </div>
+      </div>
+    </div>
+
     <!-- <div id="id_tooltip" role="tooltip">I'm a tooltip
       <div id="arrow" data-popper-arrow></div>
     </div>  -->
@@ -163,9 +173,14 @@
           'search_text' : 'id_search_text',
           'search_info' : 'id_search_info',
           'pagination' : 'id_pagination',
+          'search_history' : 'id_search_history',
         },
         'storage' : {
-          'api_address': 'unicode-search.settings.api_address'
+          'api_address': 'unicode-search.settings.api_address',
+          'search_history': 'unicode-search.settings.search_history'
+        },
+        'config' : {
+          'max_history': 10
         }
       });
       renderer.load_data(null);
